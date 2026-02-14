@@ -1,0 +1,38 @@
+{
+  "pages": [
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "约球大厅" } },
+    { "path": "pages/match/index", "style": { "navigationBarTitleText": "我的比赛" } },
+    { "path": "pages/team/index", "style": { "navigationBarTitleText": "我的球队" } },
+    { "path": "pages/my/index", "style": { "navigationBarTitleText": "我的" } }
+  ],
+  "subPackages": [
+    {
+      "root": "pages-sub",
+      "pages": [
+        { "path": "match/detail", "style": { "navigationBarTitleText": "比赛详情" } },
+        { "path": "match/create", "style": { "navigationBarTitleText": "发起约战" } },
+        { "path": "team/detail", "style": { "navigationBarTitleText": "球队详情" } },
+        { "path": "team/manage", "style": { "navigationBarTitleText": "球队管理" } },
+        { "path": "user/profile", "style": { "navigationBarTitleText": "个人资料" } }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "约球" },
+      { "pagePath": "pages/match/index", "text": "比赛" },
+      { "pagePath": "pages/team/index", "text": "球队" },
+      { "pagePath": "pages/my/index", "text": "我的" }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Spot On",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  }
+}

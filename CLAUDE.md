@@ -29,10 +29,10 @@ spot_on/
 ### Backend (`api/`)
 
 - **Framework:** FastAPI (v0.110+)
-- **ODM:** Beanie (v1.25+) — async MongoDB ODM with Pydantic V2 support
+- **ORM / Model:** SQLModel (v0.0.19+)
 - **Validation:** Pydantic V2 (v2.7+)
-- **Database:** MongoDB (v6.0+)
-- **Driver:** Motor (async)
+- **Database:** PostgreSQL (v15+)
+- **Driver:** asyncpg (async)
 - **Python:** 3.10+
 - **Details:** See `docs/TECH_SPEC_Backend.md`
 
@@ -50,13 +50,13 @@ spot_on/
 ## Documentation
 
 - `docs/用户调研.md` — User research interview with a team captain, covering pain points, feature requirements, and monetization strategy. Primary product requirements source.
-- `docs/TECH_SPEC_Backend.md` — Backend coding standards and conventions for FastAPI + Beanie + MongoDB.
+- `docs/TECH_SPEC_Backend.md` — Backend coding standards and conventions for FastAPI + SQLModel + PostgreSQL.
 - `docs/TECH_SPEC_Frontend.md` — Frontend coding standards and conventions for uni-app WeChat Mini-Program (Vue 3 + TypeScript).
 
 ## Conventions
 
 - All documentation is written in **Chinese (中文)**.
-- Backend code goes in `api/`, following the structure: `app/models/`, `app/api/`, `app/core/`, `app/services/`.
+- Backend code goes in `api/`, following the structure: `app/models/`, `app/api/v1/endpoints/`, `app/core/`, `app/services/`.
 - Frontend code goes in `wx/`.
 - Utility/temporary scripts go in `scripts/`.
 - Commit messages in English.

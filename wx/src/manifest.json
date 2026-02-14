@@ -1,0 +1,22 @@
+{
+  "name": "Spot On",
+  "appid": "",
+  "description": "约球平台 - 业余足球约战与球队管理",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "wxffe5c10500e0cb44",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true,
+      "postcss": true
+    },
+    "usingComponents": true,
+    "optimization": {
+      "subPackages": true
+    }
+  },
+  "vueVersion": "3"
+}
