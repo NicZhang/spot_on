@@ -17,7 +17,7 @@
 
 3. **Language:** TypeScript（严格类型定义，禁止 `any`）。
 
-4. **HTTP Client:** 基于 `wx.request` 封装 `miniprogram/utils/request.ts`，禁止 Axios / Fetch。
+4. **HTTP Client:** 基于 `wx.request` 封装 `src/utils/request.ts`，禁止 Axios / Fetch。
 
 5. **State Management:** 原生 `App.globalData` + 页面 `data` + 轻量模块缓存（`utils/store.ts`）。
    - ❌ 禁止使用 Pinia / Vuex / Redux / MobX
@@ -60,8 +60,8 @@
 
 ## 1. Strict Type Matching (API 驱动核心)
 
-- 所有接口类型定义在 `miniprogram/types/*.ts`。
-- 所有请求封装在 `miniprogram/api/*.ts`。
+- 所有接口类型定义在 `src/types/*.ts`。
+- 所有请求封装在 `src/api/*.ts`。
 - 页面 `.ts` 仅调用 API 并使用 `this.setData()` 更新视图数据。
 - 禁止在页面中直接散落 `wx.request`。
 
@@ -92,12 +92,12 @@
 
 ```text
 wx/
-├── miniprogram/
-│   ├── api/                    # API 请求封装
+├── src/                          # TypeScript 源码目录
+│   ├── api/                      # API 请求封装
 │   │   ├── team.ts
 │   │   ├── match.ts
 │   │   └── user.ts
-│   ├── components/             # 自定义组件
+│   ├── components/               # 自定义组件
 │   │   ├── spot-empty/
 │   │   │   ├── index.wxml
 │   │   │   ├── index.wxss
@@ -105,7 +105,7 @@ wx/
 │   │   │   └── index.json
 │   │   └── spot-card/
 │   ├── pages/
-│   │   ├── index/              # 首页（约球大厅）
+│   │   ├── index/                # 首页（约球大厅）
 │   │   │   ├── index.wxml
 │   │   │   ├── index.wxss
 │   │   │   ├── index.ts
@@ -113,36 +113,44 @@ wx/
 │   │   ├── match/
 │   │   ├── team/
 │   │   └── my/
-│   ├── pages-sub/              # 分包页面
+│   ├── pages-sub/                # 分包页面
 │   │   ├── match/detail/
 │   │   ├── match/create/
 │   │   ├── team/detail/
 │   │   ├── team/manage/
 │   │   └── user/profile/
-│   ├── types/                  # 类型定义
+│   ├── types/                    # 类型定义
 │   │   ├── team.ts
 │   │   ├── match.ts
 │   │   └── user.ts
 │   ├── utils/
-│   │   ├── request.ts          # wx.request 封装
-│   │   ├── auth.ts             # 登录/Token 管理
-│   │   └── store.ts            # 轻量缓存
+│   │   ├── request.ts            # wx.request 封装
+│   │   ├── auth.ts               # 登录/Token 管理
+│   │   └── store.ts              # 轻量缓存
+│   ├── env.ts                    # 多环境配置
+│   ├── typings.d.ts              # 全局类型声明
 │   ├── app.ts
 │   ├── app.json
 │   ├── app.wxss
 │   └── sitemap.json
-├── project.config.json
+├── miniprogram/                  # 编译输出目录（勿手动修改）
+├── scripts/
+│   └── build.js                  # tsc 编译 + 资源拷贝
+├── project.config.json           # miniprogramRoot: "miniprogram/"
 ├── project.private.config.json
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+└── tsconfig.build.json
 ```
+
+> **构建流程:** `src/` 中的 `.ts` 文件由 `tsc` 编译为 `.js` 输出到 `miniprogram/`，`.wxml` / `.wxss` / `.json` 等非 TS 文件直接拷贝。运行 `npm run build` 执行一次构建，`npm run dev` 启用 watch 模式。
 
 # HTTP 请求封装规范
 
 ## request.ts 核心结构
 
 ```typescript
-// miniprogram/utils/request.ts
+// src/utils/request.ts
 const BASE_URL = 'https://api.example.com'
 
 interface RequestOptions {
@@ -197,7 +205,7 @@ export function request<T>(options: RequestOptions): Promise<T> {
 ## API 封装示例
 
 ```typescript
-// miniprogram/api/team.ts
+// src/api/team.ts
 import { request } from '../utils/request'
 import type { Team, TeamListParams, TeamListResult } from '../types/team'
 
@@ -222,7 +230,7 @@ export function getTeamDetail(team_id: string) {
 ## 标准页面模板
 
 ```typescript
-// miniprogram/pages/team/index.ts
+// src/pages/team/index.ts
 import { getTeamList } from '../../api/team'
 import type { Team } from '../../types/team'
 
@@ -278,7 +286,7 @@ Page({
 ```
 
 ```xml
-<!-- miniprogram/pages/team/index.wxml -->
+<!-- src/pages/team/index.wxml -->
 <view class="page">
   <view wx:for="{{list}}" wx:key="_id" class="card" data-team-id="{{item._id}}" bindtap="goDetail">
     <text class="card-title">{{item.name}}</text>
@@ -294,7 +302,7 @@ Page({
 # 微信登录规范
 
 ```typescript
-// miniprogram/utils/auth.ts
+// src/utils/auth.ts
 import { request } from './request'
 
 export async function wxLogin(): Promise<string> {
@@ -396,8 +404,9 @@ export function logout() {
 每次任务流程：
 
 1. 读取接口文档片段（URL、Method、参数、响应结构）。
-2. 在 `types/` 定义严格类型，字段与后端完全一致。
-3. 在 `api/` 封装请求函数（仅调用 `request.ts`）。
+2. 在 `src/types/` 定义严格类型，字段与后端完全一致。
+3. 在 `src/api/` 封装请求函数（仅调用 `request.ts`）。
 4. 生成页面 `wxml/wxss/ts/json`，补齐 Loading / 空状态 / 错误处理。
-5. 在 `app.json` 注册路由并检查分包配置。
-6. 运行上线前强制门禁，全部通过后方可提测。
+5. 在 `src/app.json` 注册路由并检查分包配置。
+6. 运行 `npm run build` 编译，确认无 TS 报错。
+7. 运行上线前强制门禁，全部通过后方可提测。

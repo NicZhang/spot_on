@@ -38,25 +38,26 @@ spot_on/
 
 ### Frontend — WeChat Mini-Program (`wx/`)
 
-- **Framework:** uni-app (Vue 3 + Vite), `<script setup lang="ts">` composition API
-- **UI Library:** uni-ui (official uni-app component library)
-- **Language:** TypeScript (strict, no `any`)
-- **HTTP Client:** `uni.request` wrapped in `src/utils/request.ts`
-- **State:** Pinia
-- **Router:** `pages.json` declarative routing + `uni.navigateTo` / `uni.switchTab`
-- **Style:** SCSS with `rpx` units
+- **Framework:** 微信小程序原生框架（WXML / WXSS / TypeScript）
+- **UI Library:** Vant Weapp (`@vant/weapp`)
+- **Language:** TypeScript (strict, no `any`), external `tsc` compilation
+- **HTTP Client:** `wx.request` wrapped in `src/utils/request.ts`
+- **State:** `App.globalData` + page `data` + lightweight memory cache (`src/utils/store.ts`)
+- **Router:** `app.json` declarative routing + `wx.navigateTo` / `wx.switchTab` / `wx.reLaunch`
+- **Style:** WXSS with `rpx` units
+- **Build:** `src/` (TS source) → `miniprogram/` (compiled JS output via `scripts/build.js`)
 - **Details:** See `docs/TECH_SPEC_Frontend.md`
 
 ## Documentation
 
 - `docs/用户调研.md` — User research interview with a team captain, covering pain points, feature requirements, and monetization strategy. Primary product requirements source.
 - `docs/TECH_SPEC_Backend.md` — Backend coding standards and conventions for FastAPI + SQLModel + PostgreSQL.
-- `docs/TECH_SPEC_Frontend.md` — Frontend coding standards and conventions for uni-app WeChat Mini-Program (Vue 3 + TypeScript).
+- `docs/TECH_SPEC_Frontend.md` — Frontend coding standards and conventions for native WeChat Mini-Program (WXML / WXSS / TypeScript).
 
 ## Conventions
 
 - All documentation is written in **Chinese (中文)**.
 - Backend code goes in `api/`, following the structure: `app/models/`, `app/api/v1/endpoints/`, `app/core/`, `app/services/`.
-- Frontend code goes in `wx/`.
+- Frontend TypeScript source goes in `wx/src/`, compiled output in `wx/miniprogram/`.
 - Utility/temporary scripts go in `scripts/`.
 - Commit messages in English.
