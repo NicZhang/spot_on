@@ -1,0 +1,153 @@
+/* pages/chat/index.wxss */
+
+.page-chat {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* ======== 加载 / 空状态 ======== */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.empty-state {
+  padding-top: 120rpx;
+}
+
+.empty-action {
+  margin-top: 24rpx;
+}
+
+.empty-btn {
+  display: inline-block;
+  padding: 16rpx 48rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  border-radius: 40rpx;
+}
+
+/* ======== 聊天列表 ======== */
+.chat-list {
+  background: #ffffff;
+}
+
+.section-header {
+  padding: 16rpx 32rpx 8rpx;
+  background: #fafafa;
+}
+
+.section-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #8a8a8a;
+}
+
+/* ======== 聊天项 ======== */
+.chat-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.chat-item:active {
+  background: #f5f5f5;
+}
+
+.chat-item--ai {
+  margin: 16rpx 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #eef2ff, #e8eaff, #f3e8ff);
+  border: 1rpx solid rgba(99, 102, 241, 0.15);
+  border-radius: 20rpx;
+  border-bottom: none;
+}
+
+.chat-item--ai:active {
+  opacity: 0.8;
+  background: linear-gradient(135deg, #e0e7ff, #ddd6fe, #ede9fe);
+}
+
+/* ======== 头像 ======== */
+.chat-avatar-wrap {
+  position: relative;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.chat-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #e5e5e5;
+}
+
+.chat-avatar--ai {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  box-shadow: 0 4rpx 12rpx rgba(99, 102, 241, 0.3);
+}
+
+.unread-badge {
+  position: absolute !important;
+  top: -8rpx;
+  right: -8rpx;
+}
+
+/* ======== 内容区 ======== */
+.chat-content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chat-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.chat-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2329;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400rpx;
+}
+
+.chat-name--ai {
+  color: #4338ca;
+}
+
+.chat-time {
+  font-size: 22rpx;
+  color: #8a8a8a;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.chat-time--ai {
+  color: #818cf8;
+}
+
+.chat-msg {
+  font-size: 26rpx;
+  color: #8a8a8a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.chat-msg--ai {
+  color: rgba(99, 102, 241, 0.7);
+}

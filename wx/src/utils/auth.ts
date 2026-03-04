@@ -1,17 +1,26 @@
 import { request } from './request'
+import type { User } from '../types/user'
 
-export async function wxLogin(): Promise<string> {
+interface LoginResult {
+  token: string
+  refreshToken: string
+  expiresIn: number
+  user: User
+}
+
+export async function wxLogin(): Promise<LoginResult> {
   const loginRes = await wx.login()
   const code = loginRes.code
 
-  const res = await request<{ token: string }>({
-    url: '/auth/wx-login',
+  const res = await request<LoginResult>({
+    url: '/auth/wechat/login',
     method: 'POST',
     data: { code }
   })
 
   wx.setStorageSync('token', res.token)
-  return res.token
+  wx.setStorageSync('refreshToken', res.refreshToken)
+  return res
 }
 
 export function isLoggedIn(): boolean {
@@ -20,5 +29,6 @@ export function isLoggedIn(): boolean {
 
 export function logout() {
   wx.removeStorageSync('token')
-  wx.reLaunch({ url: '/pages/index/index' })
+  wx.removeStorageSync('refreshToken')
+  wx.reLaunch({ url: '/pages/login/index' })
 }

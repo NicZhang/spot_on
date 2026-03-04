@@ -1,3 +1,246 @@
-<view class="container">
-  <text class="title">约球大厅</text>
+<view class="page-index">
+  <!-- 搜索栏 + 筛选图标 -->
+  <view class="search-bar">
+    <view class="search-main">
+      <van-search
+        value="{{ keyword }}"
+        placeholder="搜索球队或场地"
+        shape="round"
+        bind:change="onSearchChange"
+        bind:search="onSearchConfirm"
+        bind:clear="onSearchClear"
+      />
+    </view>
+    <view class="filter-icon-btn" bindtap="onOpenFormatPopup">
+      <van-icon name="filter-o" size="40rpx" color="#646a73" />
+    </view>
+  </view>
+
+  <!-- 横向滚动 Filter Chips -->
+  <scroll-view class="chip-bar" scroll-x enable-flex>
+    <view
+      wx:for="{{ filterChips }}"
+      wx:key="key"
+      class="chip {{ activeChipKeys.indexOf(item.key) !== -1 ? (item.vip ? 'chip--vip-active' : 'chip--active') : '' }} {{ item.vip ? 'chip--vip' : '' }}"
+      data-key="{{ item.key }}"
+      bindtap="onChipTap"
+    >
+      <text>{{ item.label }}</text>
+    </view>
+  </scroll-view>
+
+  <!-- VIP 升级 Banner -->
+  <view class="vip-banner" bindtap="onVipBannerTap">
+    <view class="vip-banner-left">
+      <van-icon name="gem" size="36rpx" color="#ffd700" custom-class="vip-banner-icon" />
+      <text class="vip-banner-title">升级 VIP 队长</text>
+      <text class="vip-banner-desc">解锁高级筛选 · 优先匹配</text>
+    </view>
+    <view class="vip-banner-btn">
+      <text>立即开通</text>
+    </view>
+  </view>
+
+  <!-- 约球帖子列表 -->
+  <view class="match-list" wx:if="{{ matchList.length > 0 }}">
+    <view
+      wx:for="{{ matchList }}"
+      wx:key="id"
+      class="match-card"
+      style="border-left: 6rpx solid {{ item.intensity === '养生局' ? '#22c55e' : item.intensity === '竞技局' ? '#f97316' : '#ef4444' }};"
+      data-id="{{ item.id }}"
+      bindtap="onCardTap"
+    >
+      <!-- 置顶标识 -->
+      <view wx:if="{{ item.urgentTop }}" class="urgent-badge">
+        <text>急</text>
+      </view>
+
+      <!-- 卡片头部：球队 + 价格 -->
+      <view class="card-header">
+        <view class="team-info">
+          <image
+            class="team-logo"
+            src="{{ item.hostTeam.logo }}"
+            mode="aspectFill"
+          />
+          <view class="team-name-wrap">
+            <view class="team-name-row">
+              <text class="team-name">{{ item.hostTeam.name }}</text>
+              <van-icon
+                wx:if="{{ item.hostTeam.isVerified }}"
+                name="certificate"
+                color="#1677ff"
+                size="28rpx"
+              />
+            </view>
+            <text class="team-member-count">{{ item.hostTeam.memberCount }}人</text>
+          </view>
+        </view>
+        <view class="price-area">
+          <text class="price-value">¥{{ item.totalPrice }}</text>
+          <text class="price-unit">/队</text>
+        </view>
+      </view>
+
+      <!-- 信息网格 -->
+      <view class="info-grid">
+        <view class="info-grid-item">
+          <van-icon name="clock-o" size="26rpx" color="#8f959e" />
+          <text class="grid-text">{{ item.date }} {{ item.time }}</text>
+        </view>
+        <view class="info-grid-item">
+          <van-icon name="flag-o" size="26rpx" color="#8f959e" />
+          <text class="grid-text">{{ item.format }} · {{ item.duration }}分钟</text>
+        </view>
+        <view class="info-grid-item">
+          <van-icon name="location-o" size="26rpx" color="#8f959e" />
+          <text class="grid-text grid-text--ellipsis">{{ item.fieldName ? item.fieldName : item.location }}</text>
+        </view>
+        <view class="info-grid-item">
+          <van-icon name="aim" size="26rpx" color="#8f959e" />
+          <text class="grid-text" wx:if="{{ item.distance !== undefined }}">{{ item.distance < 1 ? item.distance * 1000 + 'm' : item.distance + 'km' }}</text>
+          <text class="grid-text" wx:else>--</text>
+        </view>
+      </view>
+
+      <!-- VIP 数据行 -->
+      <view class="vip-data-row">
+        <view class="vip-data-item">
+          <text class="vip-data-label">信用</text>
+          <text class="vip-data-value">{{ item.hostTeam.creditScore }}</text>
+        </view>
+        <view class="vip-data-divider"></view>
+        <view class="vip-data-item">
+          <text class="vip-data-label">胜率</text>
+          <text class="vip-data-value">{{ item.hostTeam.winRate !== undefined ? item.hostTeam.winRate + '%' : '--' }}</text>
+        </view>
+        <view class="vip-data-divider"></view>
+        <view class="vip-data-item">
+          <text class="vip-data-label">球风</text>
+          <text class="vip-data-value">{{ item.intensity }}</text>
+        </view>
+      </view>
+
+      <!-- 设施/球衣标签 chips -->
+      <view class="amenity-chips">
+        <!-- 球衣颜色 -->
+        <view class="amenity-chip">
+          <view class="jersey-dot" style="background-color: {{ item.jerseyColor }};"></view>
+          <text>球衣</text>
+        </view>
+        <!-- 设施标签 -->
+        <view
+          wx:for="{{ item.amenities }}"
+          wx:for-item="amenity"
+          wx:key="*this"
+          class="amenity-chip"
+        >
+          <text>{{ amenity }}</text>
+        </view>
+        <!-- 性别限制 -->
+        <view wx:if="{{ item.genderReq !== 'any' }}" class="amenity-chip">
+          <text>{{ genderMap[item.genderReq] }}</text>
+        </view>
+      </view>
+
+      <!-- 底部：查看详情按钮 -->
+      <view class="card-action">
+        <view
+          class="detail-btn"
+          data-id="{{ item.id }}"
+          data-team="{{ item.hostTeam.name }}"
+          catchtap="onAcceptTap"
+        >
+          <text>查看详情</text>
+        </view>
+        <text wx:if="{{ item.memo }}" class="card-memo">{{ item.memo }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多状态 -->
+  <view wx:if="{{ matchList.length > 0 && loading }}" class="loading-more">
+    <van-loading size="40rpx" type="spinner">
+      <text>加载中...</text>
+    </van-loading>
+  </view>
+
+  <!-- 没有更多数据 -->
+  <view wx:if="{{ matchList.length > 0 && !hasMore && !loading }}" class="no-more">
+    <text class="no-more-text">-- 没有更多了 --</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{ matchList.length === 0 && !loading && !isFirstLoad }}" class="empty-state">
+    <van-empty description="暂无约球帖子">
+      <view class="empty-tip">
+        <text>换个筛选条件试试</text>
+      </view>
+    </van-empty>
+  </view>
+
+  <!-- 首次加载骨架屏 -->
+  <view wx:if="{{ isFirstLoad && loading }}" class="skeleton-wrap">
+    <van-skeleton title row="4" loading="{{ true }}" />
+    <van-skeleton title row="4" loading="{{ true }}" />
+    <van-skeleton title row="4" loading="{{ true }}" />
+  </view>
+
+  <!-- FAB 按钮 -->
+  <view class="fab-btn" bindtap="onFabTap">
+    <van-icon name="plus" size="48rpx" color="#ffffff" />
+  </view>
+
+  <!-- 高级筛选弹窗：赛制 -->
+  <van-popup
+    show="{{ showFormatPopup }}"
+    position="bottom"
+    round
+    bind:close="onClosePopup"
+  >
+    <view class="popup-content">
+      <view class="popup-title"><text>选择赛制</text></view>
+      <view class="popup-options">
+        <view
+          wx:for="{{ formatOptions }}"
+          wx:key="value"
+          class="popup-option {{ activeFormat === item.value ? 'popup-option--active' : '' }}"
+          data-value="{{ item.value }}"
+          bindtap="onSelectFormat"
+        >
+          <text>{{ item.label }}</text>
+          <van-icon wx:if="{{ activeFormat === item.value }}" name="success" color="#07c160" />
+        </view>
+      </view>
+      <!-- Jump to intensity -->
+      <view class="popup-title popup-title--sub"><text>选择强度</text></view>
+      <view class="popup-options">
+        <view
+          wx:for="{{ intensityOptions }}"
+          wx:key="value"
+          class="popup-option {{ activeIntensity === item.value ? 'popup-option--active' : '' }}"
+          data-value="{{ item.value }}"
+          bindtap="onSelectIntensity"
+        >
+          <text>{{ item.label }}</text>
+          <van-icon wx:if="{{ activeIntensity === item.value }}" name="success" color="#07c160" />
+        </view>
+      </view>
+      <!-- Gender -->
+      <view class="popup-title popup-title--sub"><text>选择性别</text></view>
+      <view class="popup-options">
+        <view
+          wx:for="{{ genderOptions }}"
+          wx:key="value"
+          class="popup-option {{ activeGender === item.value ? 'popup-option--active' : '' }}"
+          data-value="{{ item.value }}"
+          bindtap="onSelectGender"
+        >
+          <text>{{ item.label }}</text>
+          <van-icon wx:if="{{ activeGender === item.value }}" name="success" color="#07c160" />
+        </view>
+      </view>
+    </view>
+  </van-popup>
 </view>

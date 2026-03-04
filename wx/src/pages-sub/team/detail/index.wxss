@@ -1,2 +1,272 @@
-.container { padding: 30rpx; }
-.title { font-size: 34rpx; font-weight: 600; }
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 160rpx;
+}
+
+/* --- Header Card --- */
+.header-card {
+  background: #ffffff;
+  margin: 24rpx;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+}
+
+.team-logo {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.header-info {
+  margin-left: 24rpx;
+  flex: 1;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.team-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1f2329;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+
+.meta-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.report-btn {
+  position: absolute;
+  top: 32rpx;
+  right: 32rpx;
+  padding: 8rpx;
+}
+
+/* --- Stats Card --- */
+.stats-card {
+  background: #ffffff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1f2329;
+}
+
+.credit-color {
+  color: #07c160;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 60rpx;
+  background: #eee;
+}
+
+.record-row {
+  display: flex;
+  align-items: center;
+}
+
+.record-win {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #07c160;
+}
+
+.record-draw {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ff9500;
+}
+
+.record-loss {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ee0a24;
+}
+
+.record-sep {
+  font-size: 24rpx;
+  color: #ccc;
+  margin: 0 4rpx;
+}
+
+/* --- Section Card --- */
+.section-card {
+  background: #ffffff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  margin-bottom: 20rpx;
+}
+
+.section-title-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+/* --- Result List --- */
+.result-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-badge {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.result-badge.win {
+  background: rgba(7, 193, 96, 0.12);
+}
+
+.result-badge.draw {
+  background: rgba(255, 149, 0, 0.12);
+}
+
+.result-badge.loss {
+  background: rgba(238, 10, 36, 0.12);
+}
+
+.result-badge-text {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.win .result-badge-text {
+  color: #07c160;
+}
+
+.draw .result-badge-text {
+  color: #ff9500;
+}
+
+.loss .result-badge-text {
+  color: #ee0a24;
+}
+
+.result-info {
+  flex: 1;
+  margin-left: 16rpx;
+}
+
+.result-score {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+.result-opponent {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 12rpx;
+}
+
+.result-date {
+  font-size: 22rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+/* --- Tags --- */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.style-tag {
+  margin-right: 0 !important;
+}
+
+/* --- Bottom Bar --- */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* --- Loading & Empty --- */
+.loading-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 240rpx;
+}
+
+.loading-text,
+.empty-text {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 16rpx;
+}

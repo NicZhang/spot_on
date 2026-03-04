@@ -1,3 +1,208 @@
-<view class="container">
-  <text class="title">我的页面</text>
+<!-- pages/my/index.wxml -->
+<view class="page-my">
+
+  <!-- 用户信息头部 -->
+  <view class="header">
+    <!-- 状态栏占位 -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+
+    <view wx:if="{{isLoggedIn}}" class="header-content">
+      <!-- 头像 -->
+      <view class="avatar-wrap" bindtap="onChangeAvatar">
+        <van-image
+          round
+          width="140rpx"
+          height="140rpx"
+          src="{{userInfo.avatar}}"
+          fit="cover"
+        >
+          <view slot="error" class="avatar-fallback">
+            <van-icon name="manager" size="60rpx" color="#ffffff" />
+          </view>
+        </van-image>
+        <view class="avatar-edit-badge">
+          <van-icon name="photograph" size="24rpx" color="#ffffff" />
+        </view>
+      </view>
+
+      <!-- 用户名 + 角色标签 -->
+      <view class="user-meta">
+        <view class="user-name-row">
+          <text class="user-name">{{userInfo.name}}</text>
+          <van-tag
+            wx:if="{{userInfo.role === 'VIP_CAPTAIN'}}"
+            type="warning"
+            round
+            custom-class="role-tag role-tag--vip"
+          >
+            <text>VIP队长</text>
+          </van-tag>
+          <van-tag
+            wx:elif="{{userInfo.role === 'FREE_CAPTAIN'}}"
+            round
+            custom-class="role-tag role-tag--captain"
+          >
+            <text>普通队长</text>
+          </van-tag>
+          <van-tag
+            wx:else
+            type="primary"
+            round
+            custom-class="role-tag role-tag--player"
+          >
+            <text>球员</text>
+          </van-tag>
+        </view>
+
+        <view class="user-sub-info">
+          <text class="user-id">ID: {{userInfo.id}}</text>
+          <text wx:if="{{teamName}}" class="user-team">{{teamName}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 未登录状态 -->
+    <view wx:else class="header-content header-content--guest">
+      <view class="avatar-wrap">
+        <van-image
+          round
+          width="140rpx"
+          height="140rpx"
+          src=""
+        >
+          <view slot="error" class="avatar-fallback">
+            <van-icon name="manager" size="60rpx" color="#ffffff" />
+          </view>
+        </van-image>
+      </view>
+      <view class="user-meta">
+        <van-button
+          type="default"
+          size="small"
+          round
+          custom-class="login-btn"
+          bindtap="onLogin"
+        >
+          <text>点击登录</text>
+        </van-button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据统计横向滚动栏 -->
+  <view wx:if="{{isLoggedIn}}" class="stats-card">
+    <scroll-view scroll-x class="stats-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-value">{{userInfo.stats.goals}}</text>
+          <text class="stat-label">进球</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{userInfo.stats.assists}}</text>
+          <text class="stat-label">助攻</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{userInfo.stats.mvpCount}}</text>
+          <text class="stat-label">MVP</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{userInfo.stats.appearances}}</text>
+          <text class="stat-label">出场</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value stat-value--balance">{{userInfo.stats.balance}}</text>
+          <text class="stat-label">余额(¥)</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 快捷操作区 -->
+  <view wx:if="{{isLoggedIn}}" class="quick-actions">
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="onQuickAction" data-action="team">
+        <view class="quick-icon-wrap quick-icon--green">
+          <van-icon name="friends" size="48rpx" color="#ffffff" />
+        </view>
+        <text class="quick-text">我的球队</text>
+      </view>
+      <view class="quick-item" bindtap="onQuickAction" data-action="match">
+        <view class="quick-icon-wrap quick-icon--blue">
+          <van-icon name="records" size="48rpx" color="#ffffff" />
+        </view>
+        <text class="quick-text">赛程记录</text>
+      </view>
+      <view class="quick-item" bindtap="onQuickAction" data-action="cert">
+        <view class="quick-icon-wrap quick-icon--orange">
+          <van-icon name="certificate" size="48rpx" color="#ffffff" />
+        </view>
+        <text class="quick-text">球队认证</text>
+      </view>
+      <view class="quick-item" bindtap="onQuickAction" data-action="vip">
+        <view class="quick-icon-wrap quick-icon--gold">
+          <van-icon name="gem" size="48rpx" color="#ffffff" />
+        </view>
+        <text class="quick-text">VIP 订阅</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- VIP 升级 Banner -->
+  <view wx:if="{{isLoggedIn && userInfo.role !== 'VIP_CAPTAIN'}}" class="vip-upgrade-banner" bindtap="onQuickAction" data-action="vip">
+    <view class="vip-upgrade-bg">
+      <view class="vip-upgrade-content">
+        <view class="vip-upgrade-left">
+          <van-icon name="gem" size="40rpx" color="#ffd700" />
+          <view class="vip-upgrade-text">
+            <text class="vip-upgrade-title">升级 VIP 队长</text>
+            <text class="vip-upgrade-desc">管理3支球队 · 100人上限 · 优先匹配</text>
+          </view>
+        </view>
+        <view class="vip-upgrade-btn">
+          <text>立即开通</text>
+        </view>
+      </view>
+      <view class="vip-shimmer"></view>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu-section">
+    <van-cell-group inset>
+      <van-cell
+        title="我的球队"
+        icon="friends-o"
+        is-link
+        link-type="switchTab"
+        url="/pages/team/index"
+      />
+      <van-cell
+        title="球队认证"
+        icon="certificate"
+        is-link
+        bindtap="onMenuTap"
+        data-action="cert"
+      />
+      <van-cell
+        title="我的比赛"
+        icon="records"
+        is-link
+        link-type="navigateTo"
+        url="/pages/match/index"
+      />
+      <van-cell
+        title="设置"
+        icon="setting-o"
+        is-link
+        bindtap="onMenuTap"
+        data-action="settings"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 底部版本号 -->
+  <view class="footer">
+    <text class="footer-version">Spot On v1.0.0</text>
+  </view>
+
 </view>

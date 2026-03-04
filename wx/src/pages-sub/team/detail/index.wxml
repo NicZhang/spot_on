@@ -1,1 +1,124 @@
-<view class="container"><text class="title">球队详情</text></view>
+<!-- 对手球队详情页 -->
+<view class="page" wx:if="{{!loading && team}}">
+  <!-- 球队头部卡片 -->
+  <view class="header-card">
+    <view class="header-top">
+      <image class="team-logo" src="{{logo}}" mode="aspectFill" />
+      <view class="header-info">
+        <view class="name-row">
+          <text class="team-name">{{name}}</text>
+          <van-icon wx:if="{{isVerified}}" name="certificate" size="36rpx" color="#07c160" />
+        </view>
+        <view class="meta-row">
+          <van-icon name="location-o" size="24rpx" color="#999" />
+          <text class="meta-text">{{location}}</text>
+        </view>
+        <view class="meta-row">
+          <van-icon name="friends-o" size="24rpx" color="#999" />
+          <text class="meta-text">{{gender}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 更多操作 -->
+    <view class="report-btn" bindtap="onShowReport">
+      <van-icon name="ellipsis" size="40rpx" color="#999" />
+    </view>
+  </view>
+
+  <!-- 统计网格 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-value credit-color">{{creditScore}}</text>
+      <text class="stat-label">信用分</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-value">{{winRate}}%</text>
+      <text class="stat-label">胜率</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <view class="record-row">
+        <text class="record-win">{{winCount}}</text>
+        <text class="record-sep">/</text>
+        <text class="record-draw">{{drawCount}}</text>
+        <text class="record-sep">/</text>
+        <text class="record-loss">{{lossCount}}</text>
+      </view>
+      <text class="stat-label">胜/平/负</text>
+    </view>
+  </view>
+
+  <!-- 近期战绩 -->
+  <view class="section-card" wx:if="{{recentResults.length > 0}}">
+    <view class="section-title">
+      <text class="section-title-text">近期战绩</text>
+    </view>
+    <view class="result-list">
+      <view
+        wx:for="{{recentResults}}"
+        wx:key="date"
+        class="result-item"
+      >
+        <view class="result-badge {{item.result}}">
+          <text class="result-badge-text">{{item.resultText}}</text>
+        </view>
+        <view class="result-info">
+          <text class="result-score">{{item.scoreText}}</text>
+          <text class="result-opponent">vs {{item.opponent}}</text>
+        </view>
+        <text class="result-date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 球队标签 -->
+  <view class="section-card" wx:if="{{tags.length > 0}}">
+    <view class="section-title">
+      <text class="section-title-text">球风标签</text>
+    </view>
+    <view class="tag-list">
+      <van-tag
+        wx:for="{{tags}}"
+        wx:key="*this"
+        type="primary"
+        plain
+        custom-class="style-tag"
+      >{{item}}</van-tag>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-bar">
+    <van-button
+      type="primary"
+      block
+      round
+      color="#07c160"
+      bindtap="onInviteMatch"
+    >发起约战邀请</van-button>
+  </view>
+</view>
+
+<!-- Loading -->
+<view class="loading-container" wx:if="{{loading}}">
+  <van-icon name="loading" size="48rpx" color="#999" />
+  <text class="loading-text">加载中...</text>
+</view>
+
+<!-- Empty -->
+<view class="empty-container" wx:if="{{!loading && !team}}">
+  <van-icon name="info-o" size="80rpx" color="#ccc" />
+  <text class="empty-text">未找到球队信息</text>
+</view>
+
+<!-- 举报面板 -->
+<van-action-sheet
+  show="{{showReportSheet}}"
+  actions="{{reportReasons}}"
+  cancel-text="取消"
+  bind:close="onCloseReport"
+  bind:cancel="onCloseReport"
+  bind:select="onSelectReport"
+/>

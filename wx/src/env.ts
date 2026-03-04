@@ -4,7 +4,7 @@ export interface EnvConfig {
 
 const ENV_CONFIG: Record<string, EnvConfig> = {
   develop: {
-    baseUrl: 'https://api.example.com'
+    baseUrl: 'http://127.0.0.1:8000/api/v1'
   },
   trial: {
     baseUrl: 'https://api.example.com'
@@ -17,5 +17,5 @@ const ENV_CONFIG: Record<string, EnvConfig> = {
 export function getEnvConfig(): EnvConfig {
   const accountInfo = wx.getAccountInfoSync()
   const envVersion = accountInfo.miniProgram.envVersion
-  return ENV_CONFIG[envVersion] ?? { baseUrl: 'https://api.example.com' }
+  return ENV_CONFIG[envVersion] ?? { baseUrl: 'http://127.0.0.1:8000/api/v1' }
 }

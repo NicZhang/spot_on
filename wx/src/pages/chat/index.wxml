@@ -1,0 +1,108 @@
+<!-- pages/chat/index.wxml -->
+<view class="page-chat">
+
+  <!-- 搜索栏 -->
+  <van-search
+    value="{{searchValue}}"
+    placeholder="搜索联系人或消息..."
+    bind:change="onSearchChange"
+    bind:clear="onSearchClear"
+    shape="round"
+  />
+
+  <!-- 未登录提示 -->
+  <view wx:if="{{!isLoggedIn}}" class="empty-state">
+    <van-empty description="登录后查看消息">
+      <view class="empty-action" bindtap="onLogin">
+        <text class="empty-btn">去登录</text>
+      </view>
+    </van-empty>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:elif="{{loading}}" class="loading-wrap">
+    <van-loading size="24px" vertical>加载中...</van-loading>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{filteredList.length === 0 && !searchValue}}" class="empty-state">
+    <van-empty description="暂无消息">
+      <view class="empty-action" bindtap="onGoLobby">
+        <text class="empty-btn">去约球大厅</text>
+      </view>
+    </van-empty>
+  </view>
+
+  <!-- 搜索无结果 -->
+  <view wx:elif="{{filteredList.length === 0 && searchValue}}" class="empty-state">
+    <van-empty image="search" description="未找到匹配的消息" />
+  </view>
+
+  <!-- 聊天列表 -->
+  <view wx:else class="chat-list">
+
+    <!-- AI 助手区域 -->
+    <block wx:for="{{filteredList}}" wx:key="id">
+      <view
+        wx:if="{{item.isAi}}"
+        class="chat-item chat-item--ai"
+        bindtap="onChatTap"
+        data-id="{{item.id}}"
+      >
+        <view class="chat-avatar-wrap">
+          <view class="chat-avatar chat-avatar--ai">
+            <van-icon name="robot" size="48rpx" color="#ffffff" />
+          </view>
+          <van-info
+            wx:if="{{item.unreadCount > 0}}"
+            info="{{item.unreadCount > 99 ? '99+' : item.unreadCount}}"
+            custom-class="unread-badge"
+          />
+        </view>
+        <view class="chat-content">
+          <view class="chat-top-row">
+            <text class="chat-name chat-name--ai">{{item.name}}</text>
+            <text class="chat-time chat-time--ai">{{item.lastTime}}</text>
+          </view>
+          <text class="chat-msg chat-msg--ai">{{item.lastMessage}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 普通聊天列表 -->
+    <view wx:if="{{filteredList.length > 0}}" class="section-header">
+      <text class="section-title">消息列表</text>
+    </view>
+
+    <block wx:for="{{filteredList}}" wx:key="id">
+      <view
+        wx:if="{{!item.isAi}}"
+        class="chat-item"
+        bindtap="onChatTap"
+        data-id="{{item.id}}"
+      >
+        <view class="chat-avatar-wrap">
+          <image
+            class="chat-avatar"
+            src="{{item.avatar}}"
+            mode="aspectFill"
+          />
+          <van-info
+            wx:if="{{item.unreadCount > 0}}"
+            info="{{item.unreadCount > 99 ? '99+' : item.unreadCount}}"
+            custom-class="unread-badge"
+          />
+        </view>
+        <view class="chat-content">
+          <view class="chat-top-row">
+            <text class="chat-name">{{item.name}}</text>
+            <text class="chat-time">{{item.lastTime}}</text>
+          </view>
+          <text class="chat-msg">{{item.lastMessage}}</text>
+        </view>
+      </view>
+    </block>
+
+  </view>
+
+</view>

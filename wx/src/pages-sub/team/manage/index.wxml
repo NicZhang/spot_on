@@ -1,1 +1,160 @@
-<view class="container"><text class="title">球队管理</text></view>
+<!-- 球队管理页 -->
+<view class="page" wx:if="{{!loading}}">
+  <!-- Logo 上传 -->
+  <view class="logo-section">
+    <view class="logo-wrapper" bindtap="onChangeLogo">
+      <image class="logo-image" src="{{logo}}" mode="aspectFill" wx:if="{{logo}}" />
+      <view class="logo-placeholder" wx:else>
+        <van-icon name="photo-o" size="60rpx" color="#ccc" />
+      </view>
+      <view class="camera-badge">
+        <van-icon name="photograph" size="28rpx" color="#fff" />
+      </view>
+    </view>
+    <text class="logo-tip">点击更换球队 Logo</text>
+  </view>
+
+  <!-- 球队名称 -->
+  <view class="section-card">
+    <van-field
+      label="球队名称"
+      placeholder="请输入球队名称"
+      value="{{name}}"
+      bind:change="onNameInput"
+    />
+  </view>
+
+  <!-- 球队所在地（创建模式） -->
+  <view class="section-card" wx:if="{{isCreateMode}}">
+    <van-field
+      label="所在地"
+      placeholder="请输入球队所在地"
+      value="{{location}}"
+      bind:change="onLocationInput"
+    />
+  </view>
+
+  <!-- 球队性别 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="section-title-text">球队性别</text>
+    </view>
+    <view class="btn-group">
+      <view
+        wx:for="{{genderOptions}}"
+        wx:key="value"
+        class="btn-item {{gender === item.value ? 'btn-active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onSelectGender"
+      >
+        <text class="btn-text">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 球队公告 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="section-title-text">球队公告</text>
+    </view>
+    <van-field
+      type="textarea"
+      placeholder="输入球队公告..."
+      autosize="{{ { maxHeight: 300 } }}"
+      value="{{announcement}}"
+      bind:change="onAnnouncementInput"
+    />
+  </view>
+
+  <!-- 球衣颜色 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="section-title-text">球衣颜色</text>
+    </view>
+
+    <!-- 主场颜色 -->
+    <view class="color-row" bindtap="onShowHomePicker">
+      <text class="color-label">主场颜色</text>
+      <view class="color-right">
+        <view class="color-preview" style="background-color: {{homeJerseyColor}};"></view>
+        <van-icon name="arrow" size="28rpx" color="#999" />
+      </view>
+    </view>
+
+    <!-- 客场颜色 -->
+    <view class="color-row" bindtap="onShowAwayPicker">
+      <text class="color-label">客场颜色</text>
+      <view class="color-right">
+        <view class="color-preview" style="background-color: {{awayJerseyColor}};"></view>
+        <van-icon name="arrow" size="28rpx" color="#999" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="bottom-bar">
+    <van-button
+      type="primary"
+      block
+      round
+      color="#07c160"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onSave"
+    >{{isCreateMode ? '创建球队' : '保存'}}</van-button>
+  </view>
+</view>
+
+<!-- Loading -->
+<view class="loading-container" wx:if="{{loading}}">
+  <van-icon name="loading" size="48rpx" color="#999" />
+  <text class="loading-text">加载中...</text>
+</view>
+
+<!-- Home Color Picker Popup -->
+<van-popup show="{{showHomePicker}}" position="bottom" round bind:close="onCloseHomePicker">
+  <view class="color-picker-panel">
+    <view class="color-picker-title">
+      <text class="color-picker-title-text">选择主场球衣颜色</text>
+    </view>
+    <view class="color-grid">
+      <view
+        wx:for="{{colorOptions}}"
+        wx:key="color"
+        class="color-grid-item"
+        data-color="{{item.color}}"
+        bindtap="onSelectHomeColor"
+      >
+        <view
+          class="color-circle {{homeJerseyColor === item.color ? 'color-selected' : ''}}"
+          style="background-color: {{item.color}};"
+        ></view>
+        <text class="color-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+</van-popup>
+
+<!-- Away Color Picker Popup -->
+<van-popup show="{{showAwayPicker}}" position="bottom" round bind:close="onCloseAwayPicker">
+  <view class="color-picker-panel">
+    <view class="color-picker-title">
+      <text class="color-picker-title-text">选择客场球衣颜色</text>
+    </view>
+    <view class="color-grid">
+      <view
+        wx:for="{{colorOptions}}"
+        wx:key="color"
+        class="color-grid-item"
+        data-color="{{item.color}}"
+        bindtap="onSelectAwayColor"
+      >
+        <view
+          class="color-circle {{awayJerseyColor === item.color ? 'color-selected' : ''}}"
+          style="background-color: {{item.color}};"
+        ></view>
+        <text class="color-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+</van-popup>

@@ -1,8 +1,313 @@
-.container {
-  padding: 30rpx;
+/* pages/my/index.wxss */
+
+.page-my {
+  min-height: 100vh;
+  background: #f5f5f5;
 }
 
-.title {
-  font-size: 36rpx;
+/* ======== 头部区域 ======== */
+.header {
+  background: linear-gradient(135deg, #07c160, #06ae56);
+  padding: 0 40rpx 48rpx;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  padding-top: 40rpx;
+}
+
+.header-content--guest {
+  padding-top: 60rpx;
+}
+
+/* 头像 */
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 140rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+.avatar-edit-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 用户信息 */
+.user-meta {
+  margin-left: 32rpx;
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #ffffff;
+  margin-right: 16rpx;
+  max-width: 320rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-tag {
+  flex-shrink: 0;
+}
+
+.role-tag--vip {
+  background: #ffd700 !important;
+  color: #7a5c00 !important;
+  border-color: #ffd700 !important;
+}
+
+.role-tag--captain {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.role-tag--player {
+  background: rgba(22, 119, 255, 0.8) !important;
+  color: #ffffff !important;
+  border-color: rgba(22, 119, 255, 0.8) !important;
+}
+
+.user-sub-info {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.user-id {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 20rpx;
+}
+
+.user-team {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 300rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.login-btn {
+  color: #07c160 !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  font-size: 28rpx !important;
+}
+
+/* ======== 数据统计栏 ======== */
+.stats-card {
+  margin: -24rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 1;
+}
+
+.stats-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.stats-row {
+  display: flex;
+  padding: 32rpx 16rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1f2329;
+  line-height: 1.2;
+}
+
+.stat-value--balance {
+  color: #fa5151;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #8a8a8a;
+  margin-top: 8rpx;
+}
+
+/* ======== 快捷操作区 ======== */
+.quick-actions {
+  margin: 24rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  padding: 32rpx 24rpx;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx 0;
+}
+
+.quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quick-icon-wrap {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-icon--green {
+  background: linear-gradient(135deg, #07c160, #06ae56);
+}
+
+.quick-icon--blue {
+  background: linear-gradient(135deg, #1677ff, #0958d9);
+}
+
+.quick-icon--orange {
+  background: linear-gradient(135deg, #ff9500, #e68600);
+}
+
+.quick-icon--gold {
+  background: linear-gradient(135deg, #ffd700, #f0c800);
+}
+
+.quick-text {
+  font-size: 24rpx;
+  color: #333333;
+  margin-top: 12rpx;
+}
+
+/* ======== VIP 升级 Banner ======== */
+.vip-upgrade-banner {
+  margin: 24rpx 24rpx 0;
+}
+
+.vip-upgrade-bg {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.vip-upgrade-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+}
+
+.vip-upgrade-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.vip-upgrade-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.vip-upgrade-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.vip-upgrade-desc {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.vip-upgrade-btn {
+  flex-shrink: 0;
+  padding: 12rpx 28rpx;
+  background: linear-gradient(135deg, #ffd700, #f0c800);
+  border-radius: 24rpx;
+}
+
+.vip-upgrade-btn text {
+  font-size: 24rpx;
   font-weight: 600;
+  color: #1a1a2e;
+}
+
+.vip-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.08), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* ======== 菜单列表 ======== */
+.menu-section {
+  margin-top: 24rpx;
+  padding-bottom: 24rpx;
+}
+
+/* ======== 底部版本号 ======== */
+.footer {
+  display: flex;
+  justify-content: center;
+  padding: 48rpx 0 80rpx;
+}
+
+.footer-version {
+  font-size: 22rpx;
+  color: #c0c0c0;
 }

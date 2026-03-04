@@ -1,9 +1,11 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/match/index",
     "pages/team/index",
-    "pages/my/index"
+    "pages/chat/index",
+    "pages/my/index",
+    "pages/match/index",
+    "pages/login/index"
   ],
   "subpackages": [
     {
@@ -25,25 +27,33 @@
   },
   "tabBar": {
     "color": "#7a7e83",
-    "selectedColor": "#1677ff",
+    "selectedColor": "#07c160",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "约球"
-      },
-      {
-        "pagePath": "pages/match/index",
-        "text": "比赛"
+        "text": "约球",
+        "iconPath": "assets/tabbar/match.png",
+        "selectedIconPath": "assets/tabbar/match-active.png"
       },
       {
         "pagePath": "pages/team/index",
-        "text": "球队"
+        "text": "球队",
+        "iconPath": "assets/tabbar/team.png",
+        "selectedIconPath": "assets/tabbar/team-active.png"
+      },
+      {
+        "pagePath": "pages/chat/index",
+        "text": "消息",
+        "iconPath": "assets/tabbar/message.png",
+        "selectedIconPath": "assets/tabbar/message-active.png"
       },
       {
         "pagePath": "pages/my/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile.png",
+        "selectedIconPath": "assets/tabbar/profile-active.png"
       }
     ]
   },

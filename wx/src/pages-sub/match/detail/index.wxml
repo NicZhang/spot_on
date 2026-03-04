@@ -1,1 +1,168 @@
-<view class="container"><text class="title">比赛详情</text></view>
+<!-- 约球详情页 -->
+<view class="page" wx:if="{{!loading && match}}">
+  <!-- 对阵信息 -->
+  <view class="versus-card">
+    <view class="team-side" bindtap="onViewHostTeam">
+      <image class="team-logo" src="{{hostTeam.logo}}" mode="aspectFill" />
+      <text class="team-name">{{hostTeam.name}}</text>
+      <view class="team-credit">
+        <text class="credit-label">信用</text>
+        <text class="credit-value">{{hostTeam.creditScore}}</text>
+      </view>
+    </view>
+    <view class="versus-center">
+      <text class="versus-text">VS</text>
+      <text class="versus-status" wx:if="{{status === 'open'}}">等待应战</text>
+      <text class="versus-status matched" wx:elif="{{status === 'matched'}}">已匹配</text>
+      <text class="versus-status finished" wx:elif="{{status === 'finished'}}">已结束</text>
+      <text class="versus-status cancelled" wx:elif="{{status === 'cancelled'}}">已取消</text>
+    </view>
+    <view class="team-side" wx:if="{{guestTeam}}" bindtap="onViewGuestTeam">
+      <image class="team-logo" src="{{guestTeam.logo}}" mode="aspectFill" />
+      <text class="team-name">{{guestTeam.name}}</text>
+      <view class="team-credit">
+        <text class="credit-label">信用</text>
+        <text class="credit-value">{{guestTeam.creditScore}}</text>
+      </view>
+    </view>
+    <view class="team-side team-placeholder" wx:else>
+      <view class="team-logo placeholder-logo">
+        <text class="placeholder-text">?</text>
+      </view>
+      <text class="team-name placeholder-name">等待对手</text>
+    </view>
+  </view>
+
+  <!-- 比赛信息卡片 -->
+  <view class="info-card">
+    <view class="card-title">
+      <text class="card-title-text">比赛信息</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="clock-o" size="32rpx" color="#999" />
+      <text class="info-label">时间</text>
+      <text class="info-value">{{date}} {{time}}</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="clock-o" size="32rpx" color="#999" />
+      <text class="info-label">时长</text>
+      <text class="info-value">{{duration}}分钟</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="location-o" size="32rpx" color="#999" />
+      <text class="info-label">地点</text>
+      <text class="info-value">{{location}}</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="flag-o" size="32rpx" color="#999" />
+      <text class="info-label">赛制</text>
+      <text class="info-value">{{format}}</text>
+    </view>
+    <view class="info-row">
+      <van-icon name="fire-o" size="32rpx" color="#999" />
+      <text class="info-label">强度</text>
+      <van-tag type="primary" plain>{{intensity}}</van-tag>
+    </view>
+    <view class="info-row">
+      <van-icon name="friends-o" size="32rpx" color="#999" />
+      <text class="info-label">性别</text>
+      <text class="info-value">{{genderReq}}</text>
+    </view>
+  </view>
+
+  <!-- 费用明细 -->
+  <view class="info-card" wx:if="{{costBreakdown}}">
+    <view class="card-title">
+      <text class="card-title-text">费用明细</text>
+    </view>
+    <view class="cost-row">
+      <text class="cost-label">场地费</text>
+      <text class="cost-value">¥{{costBreakdown.pitchFee}}</text>
+    </view>
+    <view class="cost-row">
+      <text class="cost-label">裁判费</text>
+      <text class="cost-value">¥{{costBreakdown.refereeFee}}</text>
+    </view>
+    <view class="cost-row">
+      <text class="cost-label">水费</text>
+      <text class="cost-value">¥{{costBreakdown.waterFee}}</text>
+    </view>
+    <view class="cost-divider"></view>
+    <view class="cost-row total-row">
+      <text class="cost-label total-label">总费用</text>
+      <text class="cost-value total-value">¥{{totalPrice}}</text>
+    </view>
+  </view>
+
+  <!-- 球衣颜色 -->
+  <view class="info-card">
+    <view class="card-title">
+      <text class="card-title-text">球衣颜色</text>
+    </view>
+    <view class="jersey-row">
+      <view class="color-block" style="background-color: {{jerseyColor}};"></view>
+      <text class="jersey-text">{{jerseyColor}}</text>
+    </view>
+  </view>
+
+  <!-- 设施标签 -->
+  <view class="info-card" wx:if="{{amenities.length > 0}}">
+    <view class="card-title">
+      <text class="card-title-text">设施</text>
+    </view>
+    <view class="tag-list">
+      <van-tag
+        wx:for="{{amenities}}"
+        wx:key="*this"
+        type="default"
+        plain
+        custom-class="amenity-tag"
+      >{{item}}</van-tag>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="info-card" wx:if="{{memo}}">
+    <view class="card-title">
+      <text class="card-title-text">备注</text>
+    </view>
+    <text class="memo-text">{{memo}}</text>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-bar" wx:if="{{status === 'open' && !isOwnMatch}}">
+    <van-button
+      type="primary"
+      block
+      round
+      color="#07c160"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onAcceptMatch"
+    >应战</van-button>
+  </view>
+
+  <view class="bottom-bar" wx:elif="{{status === 'matched' && isOwnMatch}}">
+    <van-button
+      type="danger"
+      block
+      round
+      plain
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onCancelMatch"
+    >取消应战</van-button>
+  </view>
+</view>
+
+<!-- Loading -->
+<view class="loading-container" wx:if="{{loading}}">
+  <van-icon name="loading" size="48rpx" color="#999" />
+  <text class="loading-text">加载中...</text>
+</view>
+
+<!-- Empty -->
+<view class="empty-container" wx:if="{{!loading && !match}}">
+  <van-icon name="info-o" size="80rpx" color="#ccc" />
+  <text class="empty-text">未找到比赛信息</text>
+</view>

@@ -29,7 +29,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # WeChat Mini-Program
-wx/miniprogram_npm/
+wx/miniprogram/
 wx/project.private.config.json
 
 # Vue / Vite build output

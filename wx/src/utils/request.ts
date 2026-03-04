@@ -1,6 +1,9 @@
 import { getEnvConfig } from '../env'
 
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+/** wx.request 原生支持的方法 */
+type WxMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'TRACE' | 'CONNECT'
 
 export interface RequestOptions {
   url: string
@@ -19,14 +22,22 @@ export function request<T>(options: RequestOptions): Promise<T> {
   const token = wx.getStorageSync('token') as string
   const { baseUrl } = getEnvConfig()
 
+  /** wx.request 不支持 PATCH，使用 POST + X-HTTP-Method-Override */
+  const isPatch = options.method === 'PATCH'
+  const actualMethod: WxMethod = isPatch ? 'POST' : (options.method || 'GET') as WxMethod
+  const extraHeaders: Record<string, string> = isPatch
+    ? { 'X-HTTP-Method-Override': 'PATCH' }
+    : {}
+
   return new Promise((resolve, reject) => {
     wx.request({
       url: `${baseUrl}${options.url}`,
-      method: options.method || 'GET',
+      method: actualMethod,
       data: options.data,
       header: {
         'Content-Type': 'application/json',
         Authorization: token ? `Bearer ${token}` : '',
+        ...extraHeaders,
         ...options.header
       },
       success: (res) => {
@@ -39,7 +50,7 @@ export function request<T>(options: RequestOptions): Promise<T> {
 
         if (res.statusCode === 401) {
           wx.removeStorageSync('token')
-          wx.reLaunch({ url: '/pages/index/index' })
+          wx.reLaunch({ url: '/pages/login/index' })
           reject(new Error('登录已过期'))
           return
         }

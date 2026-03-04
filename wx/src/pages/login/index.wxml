@@ -1,0 +1,43 @@
+<view class="page-login">
+  <!-- Logo 区域 -->
+  <view class="logo-area {{ animReady ? 'logo-area--visible' : '' }}">
+    <view class="logo-box">
+      <text class="logo-text">SO</text>
+    </view>
+    <text class="app-title">Spot On</text>
+    <text class="app-subtitle">业余足球约球 & 球队管理平台</text>
+  </view>
+
+  <!-- 按钮区域 -->
+  <view class="btn-area {{ animReady ? 'btn-area--visible' : '' }}">
+    <!-- 微信一键登录 -->
+    <view class="wx-login-btn" bindtap="onWxLogin">
+      <van-icon name="wechat" size="40rpx" color="#ffffff" custom-class="btn-icon" />
+      <text class="wx-login-text">微信一键登录</text>
+    </view>
+
+    <!-- 手机号登录 -->
+    <view class="phone-login-btn" bindtap="onPhoneLogin">
+      <text class="phone-login-text">手机号登录</text>
+    </view>
+  </view>
+
+  <!-- 用户协议 -->
+  <view class="agreement-area">
+    <view class="agreement-row {{ shakeAgreement ? 'agreement-row--shake' : '' }}">
+      <van-checkbox
+        value="{{ agreed }}"
+        shape="round"
+        checked-color="#07c160"
+        icon-size="32rpx"
+        bind:change="onAgreementChange"
+      />
+      <view class="agreement-text-wrap">
+        <text class="agreement-text">我已阅读并同意</text>
+        <text class="agreement-link" bindtap="onViewUserAgreement">《用户协议》</text>
+        <text class="agreement-text">和</text>
+        <text class="agreement-link" bindtap="onViewPrivacyPolicy">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</view>

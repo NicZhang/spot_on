@@ -1,3 +1,228 @@
-<view class="container">
-  <text class="title">球队页面</text>
+<!-- pages/team/index.wxml -->
+
+<!-- Loading 状态 -->
+<view class="page-loading" wx:if="{{loading}}">
+  <van-loading size="48rpx" color="#07c160" vertical>
+    <text class="loading-text">加载中...</text>
+  </van-loading>
+</view>
+
+<!-- 空状态：未创建球队 -->
+<view class="empty-state" wx:elif="{{!hasTeam}}">
+  <view class="empty-state__icon">
+    <van-icon name="friends-o" size="160rpx" color="#cccccc" />
+  </view>
+  <text class="empty-state__title">您还没有球队</text>
+  <text class="empty-state__desc">创建或加入一支球队，开始约球吧</text>
+  <view class="empty-state__btn" bindtap="onCreateTeamTap">
+    <van-icon name="plus" size="32rpx" color="#ffffff" />
+    <text class="empty-state__btn-text">创建球队</text>
+  </view>
+</view>
+
+<!-- 有球队的主内容 -->
+<view class="page" wx:else>
+  <!-- Hero Section -->
+  <view class="hero" style="padding-top: {{statusBarHeight + 48}}px;">
+    <!-- 球队基本信息 -->
+    <view class="hero__content">
+      <!-- 球队 Logo -->
+      <view class="hero__logo-wrap">
+        <image
+          class="hero__logo"
+          src="{{team.logo}}"
+          mode="aspectFill"
+        />
+        <view class="hero__verified" wx:if="{{team.isVerified}}">
+          <van-icon name="passed" size="24rpx" color="#ffffff" />
+        </view>
+      </view>
+
+      <!-- 球队名称与标签 -->
+      <view class="hero__info">
+        <view class="hero__name-row">
+          <text class="hero__name">{{team.name}}</text>
+          <view class="hero__gender-tag hero__gender-tag--{{team.gender}}">
+            <text class="hero__gender-text">{{genderLabel}}</text>
+          </view>
+        </view>
+
+        <view class="hero__meta-row">
+          <view class="hero__credit-badge">
+            <van-icon name="shield-o" size="24rpx" color="#07c160" />
+            <text class="hero__credit-text">{{team.creditScore}}分</text>
+          </view>
+          <text class="hero__meta-separator">|</text>
+          <text class="hero__meta-text">胜率 {{winRateText}}</text>
+          <text class="hero__meta-separator">|</text>
+          <text class="hero__meta-text">{{team.location}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 公告 -->
+    <view class="hero__announcement" wx:if="{{team.announcement}}">
+      <van-icon name="volume-o" size="28rpx" color="#faad14" />
+      <text class="hero__announcement-text">{{team.announcement}}</text>
+    </view>
+
+    <!-- 统计栏 -->
+    <view class="hero__stats">
+      <view class="hero__stat-item">
+        <text class="hero__stat-value">{{team.memberCount}}</text>
+        <text class="hero__stat-label">成员</text>
+      </view>
+      <view class="hero__stat-divider"></view>
+      <view class="hero__stat-item">
+        <text class="hero__stat-value hero__stat-value--green">{{winRateText}}</text>
+        <text class="hero__stat-label">胜率</text>
+      </view>
+      <view class="hero__stat-divider"></view>
+      <view class="hero__stat-item">
+        <text class="hero__stat-value">{{team.avgAge}}</text>
+        <text class="hero__stat-label">平均年龄</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <van-tabs
+    active="{{activeTab}}"
+    bind:change="onTabChange"
+    color="#07c160"
+    title-active-color="#07c160"
+    title-inactive-color="#999999"
+    sticky
+    offset-top="0"
+  >
+    <!-- 成员 Tab -->
+    <van-tab title="成员 ({{team.memberCount}})">
+      <view class="tab-content">
+        <!-- 队员列表 -->
+        <view class="player-list">
+          <view
+            class="player-card"
+            wx:for="{{players}}"
+            wx:key="id"
+            data-user-id="{{item.userId}}"
+            bindtap="onPlayerTap"
+          >
+            <!-- 队员头像 -->
+            <view class="player-card__avatar-wrap">
+              <image class="player-card__avatar" src="{{item.avatar}}" mode="aspectFill" />
+              <view class="player-card__number">
+                <text class="player-card__number-text">{{item.number}}</text>
+              </view>
+            </view>
+
+            <!-- 队员信息 -->
+            <view class="player-card__info">
+              <view class="player-card__name-row">
+                <text class="player-card__name">{{item.name}}</text>
+                <view
+                  class="player-card__position-tag"
+                  style="background: {{positionColorMap[item.position] || '#999999'}}20; color: {{positionColorMap[item.position] || '#999999'}};"
+                >
+                  <text class="player-card__position-text">{{item.position}}</text>
+                </view>
+                <view class="player-card__captain-tag" wx:if="{{item.userId === team.captainId}}">
+                  <text class="player-card__captain-text">队长</text>
+                </view>
+              </view>
+              <!-- 数据统计 -->
+              <view class="player-card__stats">
+                <view class="player-card__stat">
+                  <text class="player-card__stat-value">{{item.stats.goals}}</text>
+                  <text class="player-card__stat-label">进球</text>
+                </view>
+                <view class="player-card__stat">
+                  <text class="player-card__stat-value">{{item.stats.assists}}</text>
+                  <text class="player-card__stat-label">助攻</text>
+                </view>
+                <view class="player-card__stat">
+                  <text class="player-card__stat-value">{{item.stats.mvpCount}}</text>
+                  <text class="player-card__stat-label">MVP</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 箭头 -->
+            <van-icon name="arrow" size="28rpx" color="#cccccc" class="player-card__arrow" />
+          </view>
+        </view>
+
+        <!-- 空列表提示 -->
+        <view class="empty-list" wx:if="{{players.length === 0 && !loading}}">
+          <van-icon name="friends-o" size="120rpx" color="#dddddd" />
+          <text class="empty-list__text">暂无队员</text>
+        </view>
+
+        <!-- 邀请队员按钮 -->
+        <view class="invite-btn" bindtap="onInviteTap">
+          <van-icon name="plus" size="32rpx" color="#07c160" />
+          <text class="invite-btn__text">邀请队员加入</text>
+        </view>
+      </view>
+    </van-tab>
+
+    <!-- 战绩 Tab -->
+    <van-tab title="战绩">
+      <view class="tab-content">
+        <!-- 比赛列表 -->
+        <view class="match-list" wx:if="{{recentResults.length > 0}}">
+          <view
+            class="match-card"
+            wx:for="{{recentResults}}"
+            wx:key="index"
+          >
+            <!-- 日期 -->
+            <view class="match-card__date-col">
+              <text class="match-card__date">{{item.date}}</text>
+            </view>
+
+            <!-- 比分 -->
+            <view class="match-card__score-col">
+              <view class="match-card__team-row">
+                <text class="match-card__team-name">{{team.name}}</text>
+                <text class="match-card__score">{{item.myScore}}</text>
+              </view>
+              <view class="match-card__vs-divider"></view>
+              <view class="match-card__team-row">
+                <text class="match-card__team-name match-card__team-name--opponent">{{item.opponent}}</text>
+                <text class="match-card__score match-card__score--opponent">{{item.opponentScore}}</text>
+              </view>
+            </view>
+
+            <!-- 结果标签 -->
+            <view class="match-card__result-col">
+              <view
+                class="result-tag {{item.myScore > item.opponentScore ? 'result-tag--win' : (item.myScore < item.opponentScore ? 'result-tag--lose' : 'result-tag--draw')}}"
+              >
+                <text class="result-tag__text">{{item.myScore > item.opponentScore ? '胜' : (item.myScore < item.opponentScore ? '负' : '平')}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 空列表提示 -->
+        <view class="empty-list" wx:if="{{recentResults.length === 0 && !loading}}">
+          <van-icon name="bar-chart-o" size="120rpx" color="#dddddd" />
+          <text class="empty-list__text">暂无战绩记录</text>
+          <text class="empty-list__desc">完成比赛后将自动记录战绩</text>
+        </view>
+      </view>
+    </van-tab>
+  </van-tabs>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bottom-bar__btn bottom-bar__btn--secondary" bindtap="onEditTeamTap">
+      <van-icon name="edit" size="32rpx" color="#666666" />
+      <text class="bottom-bar__btn-text bottom-bar__btn-text--secondary">编辑球队</text>
+    </view>
+    <view class="bottom-bar__btn bottom-bar__btn--primary" bindtap="onCreateMatchTap">
+      <van-icon name="add-o" size="32rpx" color="#ffffff" />
+      <text class="bottom-bar__btn-text bottom-bar__btn-text--primary">发起约球</text>
+    </view>
+  </view>
 </view>

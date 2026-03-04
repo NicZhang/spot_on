@@ -1,8 +1,444 @@
-.container {
-  padding: 30rpx;
+.page-index {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
 }
 
-.title {
-  font-size: 36rpx;
+/* ========== 搜索栏 ========== */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding-right: 16rpx;
+}
+
+.search-main {
+  flex: 1;
+}
+
+.filter-icon-btn {
+  flex-shrink: 0;
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-icon-btn:active {
+  opacity: 0.6;
+}
+
+/* ========== 横向 Filter Chips ========== */
+.chip-bar {
+  display: flex;
+  white-space: nowrap;
+  background: #ffffff;
+  padding: 16rpx 24rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx 28rpx;
+  margin-right: 14rpx;
+  border-radius: 32rpx;
+  background: #f5f5f5;
+  color: #646a73;
+  font-size: 24rpx;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.chip--active {
+  background: #07c160;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.chip--vip {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.chip--vip-active {
+  background: #f59e0b;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ========== VIP 升级 Banner ========== */
+.vip-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16rpx 24rpx 0;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  border-radius: 16rpx;
+}
+
+.vip-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.vip-banner-icon {
+  flex-shrink: 0;
+}
+
+.vip-banner-title {
+  font-size: 28rpx;
   font-weight: 600;
+  color: #ffffff;
+}
+
+.vip-banner-desc {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 8rpx;
+}
+
+.vip-banner-btn {
+  flex-shrink: 0;
+  padding: 10rpx 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 24rpx;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.vip-banner-btn text {
+  font-size: 24rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ========== 约球卡片列表 ========== */
+.match-list {
+  padding: 16rpx 24rpx;
+}
+
+.match-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  /* border-left is applied inline via style attr */
+}
+
+/* 置顶急标 */
+.urgent-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ee0a24;
+  color: #ffffff;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 0 16rpx 0 12rpx;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* ========== 卡片头部：球队 + 价格 ========== */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 24rpx 16rpx;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.team-logo {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.team-name-wrap {
+  margin-left: 16rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.team-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.team-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2329;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-member-count {
+  font-size: 22rpx;
+  color: #8f959e;
+  margin-top: 4rpx;
+}
+
+.price-area {
+  display: flex;
+  align-items: baseline;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.price-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #07c160;
+}
+
+.price-unit {
+  font-size: 22rpx;
+  color: #8f959e;
+  margin-left: 4rpx;
+}
+
+/* ========== 信息网格 ========== */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx 16rpx;
+  padding: 12rpx 24rpx 16rpx;
+}
+
+.info-grid-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.grid-text {
+  font-size: 24rpx;
+  color: #646a73;
+}
+
+.grid-text--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========== VIP 数据行 ========== */
+.vip-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 24rpx;
+  padding: 14rpx 0;
+  background: #f8f9fa;
+  border-radius: 10rpx;
+}
+
+.vip-data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.vip-data-label {
+  font-size: 20rpx;
+  color: #8f959e;
+}
+
+.vip-data-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+.vip-data-divider {
+  width: 1px;
+  height: 40rpx;
+  background: #e5e7eb;
+}
+
+/* ========== 设施/球衣 Chips ========== */
+.amenity-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  padding: 14rpx 24rpx 0;
+}
+
+.amenity-chip {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 16rpx;
+  background: #f5f5f5;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #646a73;
+}
+
+.jersey-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ========== 卡片底部操作 ========== */
+.card-action {
+  padding: 16rpx 24rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.detail-btn {
+  width: 100%;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 40rpx;
+}
+
+.detail-btn:active {
+  opacity: 0.85;
+}
+
+.card-memo {
+  font-size: 22rpx;
+  color: #8f959e;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========== FAB 按钮 ========== */
+.fab-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(200rpx + env(safe-area-inset-bottom));
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: #07c160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 32rpx rgba(7, 193, 96, 0.4);
+  z-index: 100;
+  transition: transform 0.15s ease;
+}
+
+.fab-btn:active {
+  transform: scale(0.92);
+}
+
+/* ========== 加载更多 ========== */
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 0;
+}
+
+/* ========== 没有更多 ========== */
+.no-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 0;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: #c8c9cc;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  padding-top: 120rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #8f959e;
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+/* ========== 骨架屏 ========== */
+.skeleton-wrap {
+  padding: 24rpx;
+}
+
+.skeleton-wrap > van-skeleton {
+  margin-bottom: 24rpx;
+}
+
+/* ========== 筛选弹窗 ========== */
+.popup-content {
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2329;
+  margin-bottom: 24rpx;
+  text-align: center;
+}
+
+.popup-title--sub {
+  margin-top: 32rpx;
+  padding-top: 24rpx;
+  border-top: 1px solid #f0f0f0;
+}
+
+.popup-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 16rpx;
+  font-size: 30rpx;
+  color: #1f2329;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.popup-option:last-child {
+  border-bottom: none;
+}
+
+.popup-option--active {
+  color: #07c160;
+  font-weight: 500;
 }
