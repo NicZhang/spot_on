@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
+import { ToastProvider } from './components/Toast';
 import TabBar from './components/TabBar';
 import Matching from './pages/Matching';
 import Matches from './pages/Matches';
@@ -23,11 +24,13 @@ import Settings from './pages/Settings';
 
 const App: React.FC = () => {
   return (
-    <AppProvider>
-      <Router>
-        <AuthWrapper />
-      </Router>
-    </AppProvider>
+    <ToastProvider>
+      <AppProvider>
+        <Router>
+          <AuthWrapper />
+        </Router>
+      </AppProvider>
+    </ToastProvider>
   );
 };
 

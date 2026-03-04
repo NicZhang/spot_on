@@ -139,7 +139,7 @@ export interface MatchRecord {
   date: string; // Display string
   isoDate: string; // For sorting
   location: string;
-  status: 'upcoming' | 'pending_report' | 'finished';
+  status: 'upcoming' | 'pending_report' | 'waiting_confirmation' | 'confirm_needed' | 'finished' | 'cancelled';
   
   // Data for finished
   myScore?: number;
@@ -179,4 +179,11 @@ export interface ChatSession {
   unreadCount: number;
   isAi?: boolean;
   messages: ChatMessage[];
+}
+
+export interface MatchFilters {
+  format?: string;      // "5人制" | "7人制" | "8人制" | "11人制"
+  intensity?: MatchIntensity;
+  timeRange?: 'today' | 'tomorrow' | 'this_week' | 'all';
+  genderReq?: GenderRequirement;
 }

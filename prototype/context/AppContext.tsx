@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { UserRole, Team, MatchRequest, Player, Bill, MatchResult, MatchIntensity, MatchCostBreakdown, MatchVAS, GenderRequirement, Transaction, MatchRecord, ChatSession, ChatMessage } from '../types';
+import { UserRole, Team, MatchRequest, Player, Bill, MatchResult, MatchIntensity, MatchCostBreakdown, MatchVAS, GenderRequirement, Transaction, MatchRecord, ChatSession, ChatMessage, MatchFilters } from '../types';
 
 // Mock Data
 const MOCK_TEAM_INITIAL: Team = {
@@ -166,6 +166,11 @@ interface AppContextType {
   checkMatchConflict: (match: MatchRequest) => MatchRecord | null;
   acceptMatch: (matchId: string) => 'success' | 'insufficient_funds' | 'time_conflict';
   cancelMatch: (matchId: string) => void;
+  confirmMatchResult: (matchId: string) => void;
+
+  // Search & Filter
+  searchMatches: (query: string) => MatchRequest[];
+  filterMatches: (filters: MatchFilters) => MatchRequest[];
 
   // Chat
   chats: ChatSession[];
@@ -198,11 +203,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         id: 'm_upcoming_1', opponentId: 't3', opponentName: '周四养生局', opponentLogo: 'https://picsum.photos/seed/thurs/200',
         date: '明天 19:00', isoDate: '2025-05-22T19:00:00', location: '大兴足球公园', status: 'upcoming', format: '8人制'
     },
-    { 
-        id: 'm_finished_1', opponentId: 't_fish', opponentName: '咸鱼联队', opponentLogo: 'https://picsum.photos/seed/fish/200',
+    {
+        id: 'm_upcoming_2', opponentId: 't_fish', opponentName: '咸鱼联队', opponentLogo: 'https://picsum.photos/seed/fish/200',
         date: '明天 19:00', isoDate: '2025-05-22T19:00:00', location: '大兴足球公园', status: 'upcoming', format: '8人制'
     },
-    { 
+    {
         id: 'm_finished_1', opponentId: 't_fish', opponentName: '咸鱼联队', opponentLogo: 'https://picsum.photos/seed/fish/200',
         date: '2025-02-10', isoDate: '2025-02-10T14:00:00', location: '朝阳公园', status: 'finished', format: '5人制',
         myScore: 5, opponentScore: 3, mvpPlayerId: 'p1', 
@@ -424,8 +429,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const completeMatch = (record: MatchRecord) => {
-      // 1. Update Schedule
-      setMySchedule(prev => prev.map(m => m.id === record.id ? record : m));
+      // Reporter submits match report -> status becomes 'waiting_confirmation'
+      const updatedRecord: MatchRecord = {
+          ...record,
+          status: 'waiting_confirmation' as const
+      };
+      setMySchedule(prev => prev.map(m => m.id === record.id ? updatedRecord : m));
+  };
+
+  const confirmMatchResult = (matchId: string) => {
+      const record = mySchedule.find(m => m.id === matchId);
+      if (!record) return;
+
+      // 1. Transition status to 'finished'
+      setMySchedule(prev => prev.map(m => {
+          if (m.id === matchId) {
+              return { ...m, status: 'finished' as const };
+          }
+          return m;
+      }));
 
       // 2. Update Player Stats
       const newPlayers = [...players];
@@ -441,9 +463,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           const p = newPlayers.find(pl => pl.id === record.mvpPlayerId);
           if(p) p.mvpCount += 1;
       }
-      
+
       // 3. Generate Bill
-      // Check if bill already exists to avoid duplicates
       const existingBill = bills.find(b => b.matchId === record.id);
       if (!existingBill && record.lineup && record.lineup.length > 0 && record.totalFee) {
           const perHead = Math.ceil(record.totalFee / record.lineup.length);
@@ -457,10 +478,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               paidCount: 0,
               totalCount: record.lineup.length,
               status: 'collecting',
-              players: record.lineup.map(pid => ({ playerId: pid, status: 'unpaid' }))
+              players: record.lineup.map(pid => ({ playerId: pid, status: 'unpaid' as const }))
           };
-          setBills([newBill, ...bills]);
-          
+          setBills(prev => [newBill, ...prev]);
+
           // Deduct balance from players
           record.lineup.forEach(pid => {
               const p = newPlayers.find(pl => pl.id === pid);
@@ -469,13 +490,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
 
       setPlayers(newPlayers);
-      
-      // 4. Update Team Stats (Mock)
+
+      // 4. Update Team Stats
       if (record.myScore !== undefined && record.opponentScore !== undefined) {
           setMyTeam(prev => ({
               ...prev,
-              winRate: record.myScore > record.opponentScore ? Math.min(100, prev.winRate + 2) : Math.max(0, prev.winRate - 1),
-              creditScore: Math.min(100, prev.creditScore + 1) // Completed match adds credit
+              winRate: record.myScore! > record.opponentScore! ? Math.min(100, prev.winRate + 2) : Math.max(0, prev.winRate - 1),
+              creditScore: Math.min(100, prev.creditScore + 1)
           }));
       }
   };
@@ -580,6 +601,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       console.log(`Reminded bill ${billId}`);
   };
 
+  const searchMatches = (query: string): MatchRequest[] => {
+      if (!query.trim()) return matches;
+      const lowerQuery = query.toLowerCase();
+      return matches.filter(m =>
+          m.hostTeam.name.toLowerCase().includes(lowerQuery) ||
+          m.location.toLowerCase().includes(lowerQuery)
+      );
+  };
+
+  const filterMatches = (filters: MatchFilters): MatchRequest[] => {
+      return matches.filter(m => {
+          if (filters.format && m.format !== filters.format) return false;
+          if (filters.intensity && m.intensity !== filters.intensity) return false;
+          if (filters.genderReq && m.genderReq !== filters.genderReq) return false;
+          if (filters.timeRange && filters.timeRange !== 'all') {
+              const matchDate = new Date(m.time);
+              const now = new Date();
+              const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              const tomorrowStart = new Date(todayStart);
+              tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+              const tomorrowEnd = new Date(tomorrowStart);
+              tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
+              const weekEnd = new Date(todayStart);
+              weekEnd.setDate(weekEnd.getDate() + (7 - weekEnd.getDay()));
+
+              switch (filters.timeRange) {
+                  case 'today':
+                      if (matchDate < todayStart || matchDate >= tomorrowStart) return false;
+                      break;
+                  case 'tomorrow':
+                      if (matchDate < tomorrowStart || matchDate >= tomorrowEnd) return false;
+                      break;
+                  case 'this_week':
+                      if (matchDate < todayStart || matchDate > weekEnd) return false;
+                      break;
+              }
+          }
+          return true;
+      });
+  };
+
   const login = () => {
       setIsLoggedIn(true);
   };
@@ -619,6 +681,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       checkMatchConflict,
       acceptMatch,
       cancelMatch,
+      confirmMatchResult,
+      searchMatches,
+      filterMatches,
       chats,
       addChatMessage,
       createChat
